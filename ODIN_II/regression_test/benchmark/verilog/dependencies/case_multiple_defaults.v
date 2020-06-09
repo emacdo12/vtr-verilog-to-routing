@@ -1,3 +1,5 @@
+//should cause error
+
 module simple_op(a,b,c,sel,out);
     input [2:0] a,b,c;
     input [1:0] sel;
