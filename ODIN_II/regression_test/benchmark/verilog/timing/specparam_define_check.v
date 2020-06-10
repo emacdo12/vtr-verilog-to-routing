@@ -7,13 +7,13 @@ module simple_op(a,b,c);
 
     and(c,a,b);
 	 
-	 parameter value = 5;
+	parameter value = 5;
 		
     specify 
 	    specparam stallup = value;
 	    specparam stalldown = stallup + value;
-        (a => c) = (stallup,stalldown);
-        (b => c) = (stallup,stalldown);
+        (a => c) = (stallup);
+        (b => c) = (stalldown);
     endspecify 
 
 endmodule 

@@ -4,7 +4,7 @@ module simple_op(a,b,c,out);
 	input  c;
     output reg out;
 
-    always @(a & b & c) begin
-        out = a | b;
+    always @(c) begin
+        out = a & b;
     end
 endmodule 
