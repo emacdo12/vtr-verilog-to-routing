@@ -1,9 +1,10 @@
-module simple_op(in,out);
+module simple_op(a,b,c,d);
 
-    input  [7:0] in;
-    output [7:0] out;
+    input  [7:0] a,b;
+    output [7:0] c,d;
 
-    assign out = flip(in);
+    assign c = flip(a);
+    assign d = flip(b);
 
     function [7:0] flip(input [7:0] in);
     begin

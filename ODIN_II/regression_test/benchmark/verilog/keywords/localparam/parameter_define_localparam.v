@@ -1,6 +1,6 @@
 module simple_op(in,out);
-    localparam msb = 2;
-    localparam lsb = 0;
+    parameter msb = 2;
+    localparam lsb = msb-msb;
 
     input  [msb:lsb] in;
     output [msb:lsb] out;
