@@ -1,12 +1,11 @@
-module simple_op(a,b,c);
+module simple_op(a,c);
 
 input reg a;
-input reg b;
 
 output reg c;
 
 always @(*) begin
-    c = a & b;
+    c = a;
 end
 
 endmodule 

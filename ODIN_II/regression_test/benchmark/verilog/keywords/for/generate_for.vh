@@ -1,6 +1,4 @@
  
-`define WIDTH 3 
-
 module simple_op(out);
     
     output [`WIDTH-1:0] out;

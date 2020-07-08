@@ -3,11 +3,11 @@ module simple_op(a,b,out);
 	output out;
 	
 generate 
-	if(`en)begin:logic
-		and a1(out,a,b);
+	if(`en)begin
+		assign out = a;
 	end
-	else if (~`en) begin:logic
-		or a1(out,a,b);
+	else if (~`en) begin
+		assign out = b;
 		end
 	endgenerate
 endmodule

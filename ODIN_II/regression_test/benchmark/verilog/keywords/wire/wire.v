@@ -1,11 +1,10 @@
-module simple_op(a,b,c);
+module simple_op(a,c);
 input a;
-input b;
 
 output c;
 
-wire a,b,c;
+wire a,c;
 
-assign c = a&b;
+assign c = a;
 
 endmodule
