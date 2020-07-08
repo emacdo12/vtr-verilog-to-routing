@@ -4,4 +4,4 @@
 
 `define WIDTH 256
 `define operator not
-`include "replicate_any_width_unary_test.v"
+`include "../generic/replicate_any_width_unary_test.v"

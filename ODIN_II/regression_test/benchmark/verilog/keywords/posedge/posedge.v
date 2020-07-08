@@ -1,19 +1,12 @@
-module simple_op(clk,res,q,clk_out);
+module simple_op(clk,a,q);
 
   input clk;
-	input res;
+  input a;
   output reg q;
-	output clk_out;
 
 
 always @(posedge clk) begin
-	if(res)begin
-		q<= 1'b1;
-	end else begin
-		q <= ~q;
-	end
+	q <= a;
 end
-    
-  assign clk_out = clk;
-    
+
 endmodule
