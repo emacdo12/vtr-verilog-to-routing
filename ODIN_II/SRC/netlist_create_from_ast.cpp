@@ -2636,17 +2636,56 @@ signal_list_t* create_output_pin(ast_node_t* var_declare, char* instance_name_pr
     char* full_name;
     signal_list_t* return_sig_list = init_signal_list();
     npin_t* new_pin;
+    char** return_string = NULL;
+    long width = -1;
 
-    /* get the name of the pin */
-    name_of_pin = get_name_of_pin_at_bit(var_declare, -1, instance_name_prefix, local_ref);
-    full_name = make_full_ref_name(instance_name_prefix, NULL, NULL, name_of_pin, -1);
-    vtr::free(name_of_pin);
+    /*Check size*/
 
-    new_pin = allocate_npin();
-    new_pin->name = full_name;
+    if (var_declare->type == IDENTIFIERS) {
+        char* temp_string = make_full_ref_name(NULL, NULL, NULL, var_declare->types.identifier, -1);
+        ast_node_t* sym_node = resolve_hierarchical_name_reference(local_ref, temp_string);
+        ast_node_t* rnode[3] = {0};
 
-    add_pin_to_signal_list(return_sig_list, new_pin);
+        if (sym_node == NULL) {
+            error_message(AST, var_declare->loc, "Missing declaration of this symbol %s\n", temp_string);
+        }
 
+        if (sym_node && sym_node->children && sym_node->type) {
+            if (sym_node->children[1] == NULL || sym_node->type == BLOCKING_STATEMENT) {
+                width = 1;
+                return_string = (char**)vtr::malloc(sizeof(char*) * width);
+                return_string[0] = make_full_ref_name(NULL, NULL, NULL, var_declare->types.identifier, -1);
+            } else if (sym_node->children[2] != NULL && sym_node->children[3] == NULL) {
+                rnode[1] = sym_node->children[1];
+                rnode[2] = sym_node->children[2];
+                oassert(rnode[1]->type == NUMBERS && rnode[2]->type == NUMBERS);
+
+                width = (rnode[1]->types.vnumber->get_value() - rnode[2]->types.vnumber->get_value() + 1);
+            }
+        }
+
+        if (width != -1) {
+            for (int i = 0; i < width; i++) {
+                name_of_pin = get_name_of_pin_at_bit(var_declare, -1, instance_name_prefix, local_ref);
+                full_name = make_full_ref_name(instance_name_prefix, NULL, NULL, name_of_pin, i);
+                vtr::free(name_of_pin);
+
+                new_pin = allocate_npin();
+                new_pin->name = full_name;
+
+                add_pin_to_signal_list(return_sig_list, new_pin);
+            }
+        } else {
+            name_of_pin = get_name_of_pin_at_bit(var_declare, -1, instance_name_prefix, local_ref);
+            full_name = make_full_ref_name(instance_name_prefix, NULL, NULL, name_of_pin, -1);
+            vtr::free(name_of_pin);
+
+            new_pin = allocate_npin();
+            new_pin->name = full_name;
+
+            add_pin_to_signal_list(return_sig_list, new_pin);
+        }
+    }
     return return_sig_list;
 }
 
