@@ -3268,6 +3268,7 @@ int alias_output_assign_pins_to_inputs(char_list_t* output_list, signal_list_t* 
  *------------------------------------------------------------------------*/
 signal_list_t* create_gate(ast_node_t* gate, char* instance_name_prefix, sc_hierarchy* local_ref) {
     signal_list_t* out_1 = NULL;
+    int width = 1;
 
     for (long j = 0; j < gate->children[0]->num_children; j++) {
         /* free the previous list since it was not the last itteration */
@@ -3285,6 +3286,7 @@ signal_list_t* create_gate(ast_node_t* gate, char* instance_name_prefix, sc_hier
             signal_list_t* in_1 = netlist_expand_ast_of_module(&(gate_instance->children[2]), instance_name_prefix, local_ref);
             /* process the signal for the input ga$te */
             out_1 = create_output_pin(gate_instance->children[1], instance_name_prefix, local_ref);
+            width = in_1->count;
 
             oassert(in_1 != NULL);
             oassert(out_1 != NULL);
@@ -3318,6 +3320,8 @@ signal_list_t* create_gate(ast_node_t* gate, char* instance_name_prefix, sc_hier
                 in[i] = netlist_expand_ast_of_module(&(gate_instance->children[i + 2]), instance_name_prefix, local_ref);
             }
 
+            width = 3;
+
             /* process the signal for the input gate */
             out_1 = create_output_pin(gate_instance->children[1], instance_name_prefix, local_ref);
 
@@ -3340,19 +3344,19 @@ signal_list_t* create_gate(ast_node_t* gate, char* instance_name_prefix, sc_hier
             /* allocate the needed pins */
             allocate_more_input_pins(gate_node, gate_instance->num_children - 2);
             for (long i = 0; i < gate_instance->num_children - 2; i++) {
-                add_input_port_information(gate_node, 1);
+                add_input_port_information(gate_node, width);
             }
 
-            allocate_more_output_pins(gate_node, 1);
-            add_output_port_information(gate_node, 1);
+            allocate_more_output_pins(gate_node, width);
+            add_output_port_information(gate_node, width);
 
             /* hookup the input pins */
             for (long i = 0; i < gate_instance->num_children - 2; i++) {
-                hookup_input_pins_from_signal_list(gate_node, i, in[i], 0, 1, verilog_netlist);
+                hookup_input_pins_from_signal_list(gate_node, i, in[i], 0, width, verilog_netlist);
             }
 
             /* hookup the output pins */
-            hookup_output_pins_from_signal_list(gate_node, 0, out_1, 0, 1);
+            hookup_output_pins_from_signal_list(gate_node, 0, out_1, 0, width);
 
             for (long i = 0; i < gate_instance->num_children - 2; i++) {
                 free_signal_list(in[i]);
